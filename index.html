@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>까비와 세종의 발명 연구소 | 횡계초 5머루</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#24304a;--paper:#fffaf0;--paper2:#f4e8cf;--line:#e0c999;--navy:#2c4a7a;--navy2:#1c3157;--red:#c9533a;--red2:#963a26;--gold:#f0b429;--ok:#3b8f5a;--muted:#7a6a4f}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:'Gowun Dodum','Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ink);font-size:21px;line-height:1.6;
+  background:linear-gradient(180deg,#f8d9c4 0,#f3e3c3 35%,#e8d2a6 100%) fixed}
+h1,h2,h3,button,.jua{font-family:'Jua','Malgun Gothic',sans-serif;font-weight:400}
+button{touch-action:manipulation}
+#app{max-width:1000px;margin:0 auto;padding:14px 14px 34px;position:relative;z-index:1}
+#petals{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+#petals i{position:absolute;top:-30px;width:14px;height:10px;border-radius:70% 0 70% 0;background:#f6b6c4;opacity:.75;animation:drift linear infinite}
+@keyframes drift{to{transform:translate(-80px,110vh) rotate(540deg)}}
+
+#hud{background:rgba(44,74,122,.92);border-radius:18px;padding:10px 14px;margin-bottom:14px;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+#hud.hidden{display:none}
+.road{display:flex;align-items:center;margin-bottom:10px}
+.node{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:19px;font-family:'Jua',sans-serif;background:#47669a;border:3px solid #7f9cc9;color:#e3ecfa}
+.node.done{background:var(--ok);border-color:#9fe0b8;color:#fff}
+.node.now{background:var(--gold);border-color:#fff1c2;color:#4a3300;transform:scale(1.15);box-shadow:0 0 14px #ffd95a}
+.seg{flex:1;height:5px;background:#47669a;border-radius:3px;margin:0 3px}
+.seg.done{background:#9fe0b8}
+.bag{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.slot{width:60px;height:60px;border-radius:14px;border:2px dashed rgba(255,255,255,.45);display:grid;place-items:center;background:rgba(0,0,0,.18);font-family:'Jua',sans-serif}
+.slot img{width:52px;height:52px;object-fit:contain}
+.slot.has{border:2px solid var(--gold);background:rgba(240,180,41,.25)}
+.coin{font-family:'Jua',sans-serif;font-size:22px;background:rgba(255,255,255,.16);border-radius:999px;padding:4px 14px}
+.who{font-size:17px;opacity:.9}
+.reset{margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,.55);color:#fff;border-radius:12px;padding:8px 14px;font-size:17px;min-height:44px;cursor:pointer}
+
+.card{background:var(--paper);border:4px solid var(--line);border-radius:24px;padding:24px 26px;box-shadow:0 12px 30px rgba(90,60,20,.25);animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.tag{display:inline-block;background:var(--navy);color:#fff;border-radius:999px;padding:3px 16px;font-family:'Jua',sans-serif;font-size:18px}
+.tag.red{background:var(--red)}
+.school{display:inline-block;background:var(--red);color:#fff;border-radius:14px;padding:6px 20px;font-family:'Jua',sans-serif;font-size:26px;margin-bottom:6px;box-shadow:0 4px 0 var(--red2)}
+h1{font-size:46px;margin:.15em 0;line-height:1.25;color:var(--navy2)}
+h2{font-size:34px;margin:.25em 0 .35em;color:var(--navy2)}
+.center{text-align:center}
+.scene{display:block;width:100%;max-height:300px;object-fit:cover;border-radius:18px;margin:8px 0 14px;background:var(--paper2)}
+.key{background:linear-gradient(transparent 55%,#ffd98a 55%);font-weight:700}
+.guide{display:flex;gap:12px;align-items:center;margin:12px 0}
+.guide img{width:88px;height:88px;object-fit:contain;flex:0 0 auto;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.guide div{background:#fff;border:2px solid var(--line);border-radius:18px;padding:10px 16px;flex:1}
+.chips{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px 0}
+.chip{background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 14px;text-align:center;min-width:130px;flex:0 1 auto}
+.chip img{display:block;width:92px;height:92px;object-fit:contain;margin:0 auto}
+.chip small{display:block;color:var(--muted);font-size:.8em;line-height:1.4}
+.chip b.big{font-size:1.5em;color:var(--red)}
+.quote{background:#fbf3df;border-left:6px solid var(--red);border-radius:10px;padding:10px 16px;margin:10px 0}
+.quote small{display:block;color:var(--muted)}
+
+.btn{display:inline-block;border:0;border-radius:18px;padding:14px 32px;min-height:62px;font-size:26px;cursor:pointer;color:#fff;background:var(--navy);box-shadow:0 5px 0 var(--navy2)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--navy2)}
+.btn.gold{background:var(--gold);color:#4a3300;box-shadow:0 5px 0 #a87a0c}
+.btn.red{background:var(--red);box-shadow:0 5px 0 var(--red2)}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 5px 0 var(--line);border:2px solid var(--line)}
+.btn.sm{font-size:19px;padding:8px 18px;min-height:48px}
+.btn:disabled{opacity:.45}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+
+.qno{color:var(--muted);font-family:'Jua',sans-serif}
+.qtext{font-size:29px;font-family:'Jua',sans-serif;margin:6px 0 16px;line-height:1.4}
+.opts{display:grid;gap:12px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{background:#fff;border:3px solid var(--line);border-radius:18px;padding:14px 18px;min-height:64px;font-size:23px;text-align:left;cursor:pointer;font-family:inherit;color:inherit}
+.opt.sel{border-color:var(--navy);background:#e3ebf8}
+.opt.ok{border-color:var(--ok);background:#dff3e3}
+.opt.no{border-color:var(--red);background:#fbe1dd;animation:shake .35s}
+.ox{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ox .opt{font-size:80px;text-align:center;font-family:'Jua',sans-serif;padding:12px}
+.ox .o{color:#2a6fb0}.ox .x{color:var(--red)}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+input.ans,textarea.ans,select.ans{font:inherit;font-size:28px;padding:12px 16px;border:3px solid var(--line);border-radius:16px;background:#fff;color:inherit}
+input.ans{width:min(100%,380px);text-align:center}
+textarea.ans{width:100%;min-height:220px;font-size:24px;line-height:1.6}
+input.ans:focus,textarea.ans:focus,select.ans:focus{outline:none;border-color:var(--navy)}
+.idrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
+.idrow input.ans{width:200px}
+.idrow select.ans{width:150px;text-align:center}
+.seq{min-height:70px;border:3px dashed var(--line);border-radius:16px;padding:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:#fff;margin-bottom:12px}
+.seq:empty::before{content:'아래 카드를 순서대로 눌러 보세요';color:#a08f70;padding-left:8px}
+.pills{display:flex;gap:10px;flex-wrap:wrap}
+.pill{background:var(--navy);color:#fff;border-radius:14px;padding:10px 16px;min-height:54px;font-size:21px;border:0;font-family:inherit;cursor:pointer}
+.pill.pool{background:#fff;color:var(--ink);border:3px solid var(--line)}
+.pill.used{visibility:hidden}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px 22px}
+.match .opt{display:flex;align-items:center;gap:10px}
+.match img{width:70px;height:70px;object-fit:contain;flex:0 0 auto}
+.fb{margin-top:16px;border-radius:14px;padding:12px 16px;font-size:22px;display:none}
+.fb.bad{display:block;background:#fbe1dd;border:2px solid var(--red)}
+.fb.good{display:block;background:#dff3e3;border:2px solid var(--ok)}
+/* 분류 */
+.sortcard{background:#fff;border:3px solid var(--line);border-radius:18px;padding:18px;text-align:center;font-size:27px;font-family:'Jua',sans-serif;margin-bottom:14px}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bins .btn{width:100%;min-height:92px}
+/* 그림 순서 */
+.frames{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frame{position:relative;background:#fff;border:3px solid var(--line);border-radius:18px;padding:8px;cursor:pointer;font-family:inherit;color:inherit;font-size:19px;text-align:center}
+.frame img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:12px;display:block;margin-bottom:4px;background:var(--paper2)}
+.frame .num{position:absolute;top:-12px;left:-12px;width:52px;height:52px;border-radius:50%;background:var(--red);color:#fff;font-family:'Jua',sans-serif;font-size:30px;display:none;place-items:center;border:3px solid #fff}
+.frame.on{border-color:var(--red)}
+.frame.on .num{display:grid}
+/* 신분 게임 */
+.scale{display:grid;gap:10px}
+.scale .opt{display:flex;align-items:center;gap:14px}
+.scale .opt b{flex:0 0 auto;width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-family:'Jua',sans-serif;font-size:24px}
+.qpic{display:block;width:min(260px,70%);height:auto;margin:0 auto 14px;object-fit:contain}
+input.ans.short{width:min(100%,520px);font-size:26px}
+/* 빙고 */
+.bingo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:420px;margin:12px auto}
+.bingo button{aspect-ratio:1;border-radius:18px;border:3px solid var(--line);background:#fff;font-family:'Jua',sans-serif;font-size:42px;color:var(--ink);cursor:pointer}
+.bingo button.cur{border-color:var(--gold);background:#fff4cf}
+.bingo button.t{background:#d6e4f7;border-color:var(--navy);color:var(--navy2)}
+.bingo button.f{background:#e7e4df;border-color:#c9c4bb;color:#9a938a}
+.bingo button.line{background:var(--gold);border-color:#a87a0c;color:#4a3300}
+
+.item{width:190px;height:190px;object-fit:contain;animation:spin .8s ease}
+@keyframes spin{from{transform:scale(0) rotate(-160deg)}to{transform:none}}
+.locks{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.locks img{width:62px;height:62px;object-fit:contain;animation:spin .6s both}
+.cert{border:8px double var(--red);border-radius:18px;padding:20px;background:#fff3ef;text-align:center}
+.letterbox{white-space:pre-wrap;text-align:left;background:#fbf3df;border-radius:12px;padding:12px 16px;border:2px solid var(--line)}
+.note{font-size:.85em;color:var(--muted)}
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+#confetti i{position:absolute;top:-20px;width:12px;height:18px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+footer{color:#7a6a4f;font-size:15px;text-align:center;margin-top:16px}
+footer button{background:none;border:0;color:#7a6a4f;text-decoration:underline;font-size:15px;min-height:44px;cursor:pointer;font-family:inherit}
+.sendstate{font-size:15px;color:var(--muted);text-align:center;margin-top:8px}
+@media(max-width:640px){
+  body{font-size:19px}h1{font-size:34px}h2{font-size:27px}.qtext{font-size:24px}
+  .card{padding:18px 14px}.opts.two,.match{grid-template-columns:1fr}.opt{font-size:21px}
+  .node{width:32px;height:32px;font-size:15px}.slot{width:46px;height:46px}.slot img{width:40px;height:40px}
+  .school{font-size:21px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="petals"></div>
+<div id="app">
+  <div id="hud" class="hidden"></div>
+  <main id="screen"></main>
+  <footer>5학년 2학기 사회 2단원 · [6차시] 조선의 발전에 따른 사람들의 생활 모습을 알아볼까요 (교과서 87~89쪽)<br>
+    <button id="teacherBtn">선생님 설정</button></footer>
+</div>
+<div id="confetti"></div>
+
+<script src="config.js"></script>
+<script>
+const CLASS_NAME = '횡계초 5머루';
+const img = n => `assets/${n}.webp`;
+const kkabi = t => `<div class="guide"><img src="${img('kkabi')}" alt="까치 선비 까비"><div>${t}</div></div>`;
+
+/* ===================== 미션 데이터 ===================== */
+const MISSIONS = [
+{
+  title:'우리 땅에 맞는 농사법', pic:'m1', item:{img:'nongsa', name:'농사직설'},
+  story:[
+    `${kkabi('또 만났네! 나는 까치 선비 <b>까비</b>야. 오늘은 세종 임금님의 <b>발명 연구소</b>에 왔어. 궁궐 문을 열려면 조선의 발명품 <b>5개</b>를 모아야 해!')}
+     <p>조선은 유교의 가르침에 따라 <span class="key">백성의 생활을 안정</span>시키고 나라를 부강하게 하려고 노력했어요.</p>
+     <p>그러려면 무엇이 가장 중요했을까요? 바로 <span class="key">농사</span>예요!</p>
+     <div class="chips">
+       <div class="chip">풍년이 들면<br><b>먹을거리가 넉넉</b></div>
+       <div class="chip">농사가 잘되면<br><b>세금이 잘 걷힘</b></div>
+       <div class="chip">생활이 안정되면<br><b>나라가 평화로움</b></div>
+     </div>`,
+    `<p>그런데 예전에는 <b>중국의 농사책</b>을 보고 농사를 지어서 <span class="key">조선의 날씨와 땅에 맞지 않았어요</span>.</p>
+     <p>그래서 <b>세종</b>은 우리 땅에 맞는 농사법을 조사해 책으로 만들라고 명했어요.</p>
+     <p>신하들은 각 지방의 <span class="key">경험 많은 농부들의 이야기</span>를 모두 듣고 기록해 다듬었어요. 그렇게 <b>1429년</b>에 나온 책이 바로 <span class="key" style="font-size:1.2em">『농사직설』</span>이에요!</p>
+     ${kkabi('우리 땅에 맞는 농사법이 알려지자 농사가 더 잘되고, 백성의 생활도 나아졌어!')}`
+  ],
+  qs:[
+    {type:'choice', q:'조선이 농사를 특히 중요하게 여긴 까닭으로 알맞은 것은?', opts:['농사가 잘되어야 백성의 생활이 안정되고 나라가 부강해져서','농사가 가장 쉬운 일이라서','다른 나라에 쌀을 모두 팔려고','왕이 농사짓기를 좋아해서'], a:0, hint:'먹을거리, 세금, 생활 안정을 떠올려 보세요.'},
+    {type:'multi', q:'농사가 잘되면 생기는 일을 모두 고르세요. (3개)', opts:['먹을거리가 넉넉해진다','세금이 잘 걷힌다','백성의 생활이 안정된다','전쟁이 자주 일어난다','사람들이 굶게 된다'], a:[0,1,2], hint:'좋은 일만 골라 보세요.'},
+    {type:'ox', q:'중국의 농사책을 그대로 따라 하면 조선에서도 농사가 잘되었다.', a:'X', hint:'나라마다 날씨와 땅이 달라요.'},
+    {type:'choice', q:'『농사직설』은 어떻게 만들었을까요?', opts:['경험 많은 농부들의 이야기를 듣고 기록해 다듬었다','중국 책을 그대로 베껴 썼다','왕이 혼자 상상해서 썼다','외국 상인에게 사 왔다'], a:0, hint:'농사를 가장 잘 아는 사람은 누구일까요?'},
+    {type:'input', q:'세종 때 우리 땅에 맞는 농사법을 모아 만든 책은?', a:['농사직설'], ph:'초성: ㄴㅅㅈㅅ', hint:'초성은 ㄴㅅㅈㅅ, 네 글자예요.'},
+    {type:'short', q:'『농사직설』이 널리 퍼진 뒤, 백성의 생활은 어떻게 달라졌을까요?', ex:'농사가 잘되어 생활이 나아졌다', hint:''}
+  ]
+},
+{
+  title:'시각을 알려 주는 기구', pic:'m2', item:{img:'angbu', name:'앙부일구'},
+  story:[
+    `<p>세종과 아들 문종은 <b>과학 기구</b>에도 관심이 많았어요. "우리나라의 시간을 정확히 알 수는 없을까?"</p>
+     <p>세종은 여러 과학자를 뽑아 연구하게 했어요. 그중 한 사람이 <span class="key">장영실</span>이에요. 장영실은 동래현(지금의 부산)의 <b>관노비</b> 출신이었지만, 뛰어난 솜씨를 인정받아 일하게 되었어요.</p>
+     ${kkabi('지난 시간에 배운 신분 기억나? 노비는 천민이었지. 그런데도 세종은 장영실의 재주를 알아보고 맡겼어!')}`,
+    `<div class="chips">
+       <div class="chip"><img src="${img('angbu')}" alt="">앙부일구<small>1434년 · 해시계</small></div>
+       <div class="chip"><img src="${img('jagyeok')}" alt="">자격루<small>1434년 · 물시계</small></div>
+     </div>
+     <p><b>앙부일구</b> - 솥 모양의 <span class="key">해시계</span>예요. <span class="key">그림자</span>로 시각을 알 수 있어요. 글을 모르는 백성도 볼 수 있게 <b>동물 그림</b>을 새겨 넣었어요.</p>
+     <p><b>자격루</b> - <span class="key">물의 흐름</span>을 이용한 물시계예요. 시간이 되면 <b>저절로 종, 북, 징을 쳐서</b> 시각을 알려 주었어요.</p>`
+  ],
+  qs:[
+    {type:'match', q:'과학 기구와 설명을 짝지어 보세요!', pairs:[['angbu','앙부일구','그림자로 시각을 알려 주는 해시계'],['jagyeok','자격루','저절로 종, 북, 징을 치는 물시계']], hint:'해=그림자, 물=자동으로 소리'},
+    {type:'sort', q:'앙부일구일까요, 자격루일까요?', bins:['앙부일구','자격루'], items:[['해의 그림자를 이용한다',0],['물의 흐름을 이용한다',1],['동물 그림을 새겨 넣었다',0],['종, 북, 징을 저절로 친다',1],['흐린 날이나 밤에도 시각을 알 수 있다',1]], hint:'해가 없으면 그림자가 생기지 않아요.'},
+    {type:'choice', q:'앙부일구에 글자 대신 동물 그림을 새긴 까닭은?', opts:['글을 모르는 백성도 시각을 알 수 있도록','예쁘게 꾸미려고','동물을 기르려고','중국 사람이 보도록'], a:0, hint:'『삼강행실도』에 그림을 넣은 까닭과 비슷해요.'},
+    {type:'ox', q:'장영실은 양반 출신의 과학자였다.', a:'X', hint:'동래현의 관노비 출신이었어요.'},
+    {type:'pic', q:'이 기구의 이름은 무엇일까요?', pic:'jagyeok', opts:['자격루','앙부일구','측우기','혼천의'], a:0, hint:'물그릇이 계단처럼 놓인 물시계예요.'}
+  ]
+},
+{
+  title:'하늘과 비를 살피는 기구', pic:'m3', item:{img:'cheugugi', name:'측우기'},
+  story:[
+    `<p>"날씨를 미리 알아 <b>풍년과 흉년</b>을 짐작할 수는 없을까?" 농사가 중요한 조선에서는 하늘과 비를 살피는 일도 중요했어요.</p>
+     <div class="chips">
+       <div class="chip"><img src="${img('honcheon')}" alt="">혼천의<small>1433년</small></div>
+       <div class="chip"><img src="${img('cheugugi')}" alt="">측우기<small>1441년</small></div>
+     </div>
+     <p><b>혼천의</b> - <span class="key">해와 달, 별의 움직임</span>을 관찰해 계절의 변화 등을 연구하는 기구예요.</p>`,
+    `<p><b>측우기</b> - 해마다 <span class="key">비의 양</span>을 재는 기구예요.</p>
+     <p>비가 많이 오는 때를 예측하고, 풍년과 흉년을 판단해서 <span class="key">세금을 알맞게 걷는 데</span> 도움을 주었어요.</p>
+     <p>측우기는 비의 양을 같은 기준으로 잰 <b>세계 최초의 기구</b>로 알려져 있어요.</p>
+     <p class="center"><b>혼천의(1433) → 앙부일구·자격루(1434) → 측우기(1441)</b></p>`
+  ],
+  qs:[
+    {type:'pic', q:'이 기구의 이름은 무엇일까요?', pic:'honcheon', opts:['혼천의','측우기','자격루','앙부일구'], a:0, hint:'고리가 여러 개 있는, 하늘을 살피는 기구예요.'},
+    {type:'choice', q:'측우기는 무엇을 재는 기구일까요?', opts:['비의 양','바람의 세기','땅의 넓이','강물의 길이'], a:0, hint:'측(잴 측) + 우(비 우)!'},
+    {type:'choice', q:'측우기로 비의 양을 재서 얻은 도움으로 알맞은 것은?', opts:['풍년과 흉년을 판단해 세금을 알맞게 걷었다','물고기를 많이 잡았다','배를 빨리 만들었다','시계를 대신했다'], a:0, hint:'비의 양을 알면 농사가 어떨지 짐작할 수 있어요.'},
+    {type:'order', q:'만들어진 순서대로 놓아 보세요!', items:['혼천의 (1433년)','앙부일구 (1434년)','측우기 (1441년)'], hint:'괄호 속 연도를 비교해 보세요.'},
+    {type:'input', q:'비의 양을 재는 기구의 이름은?', a:['측우기'], ph:'초성: ㅊㅇㄱ', hint:'초성은 ㅊㅇㄱ, 세 글자예요.'},
+    {type:'short', q:'측우기는 농사짓는 백성에게 어떤 도움을 주었을까요?', ex:'비가 올 때를 알아 농사에 도움', hint:''}
+  ]
+},
+{
+  title:'백성을 가르치는 바른 소리', pic:'m4', item:{img:'hunmin', name:'훈민정음'},
+  story:[
+    `<p>좋은 농사책 『농사직설』이 나왔지만, 농부들이 읽을 수 있었을까요? <b>아니요!</b> 책이 <span class="key">한자</span>로 되어 있었거든요.</p>
+     <p>세종은 고민했어요. "백성이 쉽게 읽고 쓸 수 있는 글자가 필요하다!"</p>
+     <div class="chips">
+       <div class="chip">① 쉽게<br>배울 수 있게</div>
+       <div class="chip">② 글자 수가<br>적게</div>
+       <div class="chip">③ 읽고 쓰기<br>쉽게</div>
+     </div>`,
+    `<p>그래서 <b>1443년</b>, 세종은 새 글자 <span class="key" style="font-size:1.2em">훈민정음</span>을 만들었어요. 처음 글자는 <span class="key">28자</span>였어요.</p>
+     <p><b>훈(訓) 민(民) 정(正) 음(音)</b> = <span class="key">백성을 가르치는 바른 소리</span></p>
+     <p><b>초성(자음) + 중성(모음) + 종성(받침)</b>을 합쳐 한 글자를 만들어요. 사투리나 흉내 내는 소리까지 그대로 쓸 수 있었어요.</p>
+     <p>반대하는 신하도 있었어요. "중국과 사이가 나빠지고, 앞선 중국 문화를 배우려면 한자를 알아야 합니다!" 그래도 세종은 훈민정음을 만들어 백성에게 널리 알렸어요.</p>`
+  ],
+  qs:[
+    {type:'choice', q:'"훈민정음"의 뜻은 무엇일까요?', opts:['백성을 가르치는 바른 소리','임금을 위한 아름다운 글','중국 글자를 배우는 책','양반만 쓰는 비밀 글자'], a:0, hint:'훈=가르치다, 민=백성, 정=바르다, 음=소리'},
+    {type:'choice', q:'세종이 훈민정음을 만든 까닭으로 가장 알맞은 것은?', opts:['한자를 모르는 백성이 쉽게 읽고 쓰게 하려고','중국에 보내 자랑하려고','양반만 쓰게 하려고','그림을 더 잘 그리려고'], a:0, hint:'『농사직설』을 읽지 못하는 농부를 떠올려 보세요.'},
+    {type:'input', q:'처음 만든 훈민정음은 모두 몇 자였을까요?', a:['28','28자','스물여덟'], ph:'숫자로 쓰기', num:true, hint:'2□자! 지금 우리는 그중 24자를 써요.'},
+    {type:'order', q:'한 글자를 만드는 순서대로 놓아 보세요! (예: 한)', items:['초성 (ㅎ)','중성 (ㅏ)','종성 (ㄴ)'], hint:'자음 → 모음 → 받침 순서예요.'},
+    {type:'ox', q:'훈민정음을 만들 때 반대하는 사람은 아무도 없었다.', a:'X', hint:'중국과의 관계를 걱정한 사람들이 있었어요.'},
+    {type:'short', q:'훈민정음이 나온 뒤, 백성의 생활은 어떻게 달라졌을까요?', ex:'자기 생각을 글로 쓸 수 있었다', hint:''}
+  ]
+},
+{
+  title:'책이 늘고 문화가 꽃피다', pic:'m5', item:{img:'gabinja', name:'갑인자'},
+  story:[
+    `<p>백성들이 글을 읽고 쓰게 되자 <span class="key">유교의 가르침을 쉽게 알리고</span>, <span class="key">문화가 발전</span>하는 데 큰 도움이 되었어요.</p>
+     <p>한글로 쓴 책도 많이 나왔어요. 예를 들어 『음식방문』 같은 책에는 <b>떡볶이, 만두</b> 같은 음식 만드는 방법이 실렸어요.</p>`,
+    `<p>책을 많이 찍으려면 인쇄 기술도 필요하지요! <b>1434년</b>에는 금속 활자 <span class="key">갑인자</span>를 만들었어요.</p>
+     <p>덕분에 <span class="key">책을 많이 찍어 낼 수</span> 있게 되었어요.</p>
+     ${kkabi('농사, 과학, 글자, 인쇄까지! 조선의 발전은 모두 <b>백성의 생활</b>을 낫게 하려는 노력이었어. 마지막 문제를 풀어 보자!')}`
+  ],
+  qs:[
+    {type:'choice', q:'1434년에 만든 금속 활자 갑인자 덕분에 생긴 변화는?', opts:['책을 많이 찍어 낼 수 있게 되었다','비의 양을 잴 수 있게 되었다','밤에도 해가 떴다','농사를 짓지 않아도 되었다'], a:0, hint:'활자는 인쇄할 때 쓰는 거예요.'},
+    {type:'ox', q:'한글로 음식 만드는 방법을 쓴 책도 나왔다.', a:'O', hint:'『음식방문』을 떠올려 보세요.'},
+    {type:'match', q:'조선의 발전과 달라진 생활을 짝지어 보세요!', pairs:[['nongsa','농사직설','우리 땅에 맞게 농사를 지음'],['angbu','앙부일구','그림자로 시각을 앎'],['cheugugi','측우기','비의 양을 재어 세금을 알맞게 걷음'],['hunmin','훈민정음','백성이 쉽게 읽고 씀']], hint:'각 발명품이 하는 일을 떠올려 보세요.'},
+    {type:'short', q:'조선의 발명품 중 가장 고마운 것과 그 까닭을 써 보세요.', ex:'한글, 쉽게 읽고 쓸 수 있어서', hint:''}
+  ]
+}
+];
+
+const BINGO = [
+  ['『농사직설』은 우리 땅에 맞는 농사법을 모은 책이다.',1,''],
+  ['앙부일구는 그림자로 시각을 알려 주는 해시계이다.',1,''],
+  ['자격루는 물의 흐름을 이용해 저절로 시각을 알려 준다.',1,''],
+  ['측우기는 바람의 세기를 재는 기구이다.',0,'측우기는 비의 양을 재는 기구예요.'],
+  ['훈민정음은 백성을 가르치는 바른 소리라는 뜻이다.',1,''],
+  ['『농사직설』은 중국 농사책을 그대로 베껴 만들었다.',0,'경험 많은 조선 농부들의 이야기를 모아 만들었어요.'],
+  ['혼천의는 해와 달, 별의 움직임을 관찰하는 기구이다.',1,''],
+  ['훈민정음은 양반만 쓰도록 만든 글자이다.',0,'백성 모두가 쉽게 쓰도록 만들었어요.'],
+  ['세종은 신분이 낮은 장영실의 재주를 알아보고 일을 맡겼다.',1,'']
+];
+const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+const MAX_COINS = MISSIONS.reduce((a,m)=>a+m.qs.length*3,0) + BINGO.length*3;
+
+/* ===================== 기록 보내기 (앱스스크립트) ===================== */
+const GAS_KEY = 'sejong-gas-url';
+(function(){ // 주소창 ?gas=... 로 받은 주소를 기억
+  try{ const u=new URL(location.href), g=u.searchParams.get('gas');
+    if(g){ localStorage.setItem(GAS_KEY,g); u.searchParams.delete('gas'); history.replaceState(null,'',u.pathname+u.search+u.hash); } }catch(e){}
+})();
+const gasUrl = () => { try{ return localStorage.getItem(GAS_KEY) || (window.CONFIG&&CONFIG.GAS_URL) || ''; }catch(e){ return (window.CONFIG&&CONFIG.GAS_URL)||''; } };
+const QKEY = 'sejong-send-queue';
+function record(kind, stage, detail){
+  const d = {class:CLASS_NAME, no:S.no, name:S.name, kind, stage, coins:S.coins, status:'', detail:detail||'', at:new Date().toLocaleString('ko-KR')};
+  let q=[]; try{ q=JSON.parse(localStorage.getItem(QKEY))||[]; }catch(e){}
+  q.push(d); try{ localStorage.setItem(QKEY, JSON.stringify(q)); }catch(e){}
+  flush();
+}
+let flushing=false;
+async function flush(){
+  const url=gasUrl(); if(!url || flushing) return;
+  let q=[]; try{ q=JSON.parse(localStorage.getItem(QKEY))||[]; }catch(e){ return; }
+  if(!q.length) return; flushing=true;
+  while(q.length){
+    try{ await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(q[0])}); }
+    catch(e){ break; }
+    q.shift(); try{ localStorage.setItem(QKEY, JSON.stringify(q)); }catch(e){}
+  }
+  flushing=false;
+}
+window.addEventListener('online', flush);
+
+/* ===================== 상태 ===================== */
+const KEY = 'sejong-lab-v1';
+const fresh = (no,n) => ({m:0, qi:0, no:no||'', name:n||'', coins:0, wr:{}, ans:{}});
+let S = fresh();
+try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && typeof s.m==='number') S = Object.assign(S, s); }catch(e){}
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} };
+const $ = s => document.querySelector(s);
+const screen = $('#screen'), hud = $('#hud');
+const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const shuffled = a => { if(a.length<2) return a.slice(); let r; do{ r=shuffle(a); }while(r.every((v,i)=>v===a[i])); return r; };
+const norm = t => String(t).replace(/[\s『』「」《》'"]/g,'').toLowerCase();
+
+for(let i=0;i<16;i++){ const b=document.createElement('i');
+  b.style.cssText=`left:${Math.random()*105}vw;animation-duration:${10+Math.random()*12}s;animation-delay:-${Math.random()*20}s`;
+  $('#petals').appendChild(b); }
+
+let AC;
+function beep(kind){
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    ({ok:[660,880], bad:[220,160], win:[523,659,784,1047]}[kind]).forEach((f,i)=>{
+      const o=AC.createOscillator(), g=AC.createGain();
+      o.type = kind==='bad'?'sawtooth':'triangle'; o.frequency.value=f;
+      g.gain.setValueAtTime(.15, AC.currentTime+i*.12);
+      g.gain.exponentialRampToValueAtTime(.001, AC.currentTime+i*.12+.25);
+      o.connect(g).connect(AC.destination); o.start(AC.currentTime+i*.12); o.stop(AC.currentTime+i*.12+.26);
+    });
+  }catch(e){}
+}
+function confetti(n=90){
+  const box=$('#confetti'), cols=['#f0b429','#2c4a7a','#c9533a','#f6b6c4','#fff'];
+  for(let i=0;i<n;i++){ const el=document.createElement('i');
+    el.style.left=Math.random()*100+'vw'; el.style.background=cols[i%cols.length];
+    el.style.animationDuration=(2+Math.random()*2.5)+'s'; el.style.animationDelay=Math.random()*.8+'s';
+    box.appendChild(el); setTimeout(()=>el.remove(),6000); }
+}
+
+function drawHud(){
+  hud.classList.remove('hidden');
+  let road='';
+  for(let i=0;i<=MISSIONS.length;i++){
+    const c = i<S.m?'done':(i===S.m?'now':'');
+    road += `<div class="node ${c}">${i<MISSIONS.length?(i<S.m?'✓':i+1):'★'}</div>`;
+    if(i<MISSIONS.length) road += `<div class="seg ${i<S.m?'done':''}"></div>`;
+  }
+  const bag = MISSIONS.map((m,i)=> i<S.m ? `<div class="slot has" title="${esc(m.item.name)}"><img src="${img(m.item.img)}" alt="${esc(m.item.name)}"></div>` : `<div class="slot">?</div>`).join('');
+  hud.innerHTML = `<div class="road">${road}</div><div class="bag">${bag}<span class="coin">엽전 ${S.coins}냥</span><span class="who">${esc(S.no)}번 ${esc(S.name)}</span><button class="reset" id="resetBtn">처음부터</button></div>`;
+  $('#resetBtn').onclick = () => { if(confirm('처음부터 다시 시작할까요? 모은 보물이 사라져요.')){ S=fresh(S.no,S.name); save(); title(); } };
+}
+const top0 = () => window.scrollTo(0,0);
+
+function title(){
+  hud.classList.add('hidden'); top0();
+  const cont = S.m>0 || S.qi>0;
+  const nos = Array.from({length:30},(_,i)=>i+1).map(n=>`<option value="${n}" ${String(n)===String(S.no)?'selected':''}>${n}번</option>`).join('');
+  screen.innerHTML = `<div class="card center">
+    <div class="school">${CLASS_NAME} 친구들의 도전!</div><br>
+    <span class="tag">5-2 사회 · 조선의 발전과 사람들의 생활</span>
+    <img class="scene" src="${img('title')}" alt="세종의 발명 연구소">
+    <h1>까비와 세종의 발명 연구소</h1>
+    ${kkabi(`${CLASS_NAME} 친구들, 어서 와! 궁궐 문을 열려면 조선의 발명품 5개가 필요해. 나랑 같이 모으러 갈래?`)}
+    <p class="note">문제를 맞혀야만 다음 단계로 갈 수 있어요. 한 번에 맞히면 엽전 3냥!</p>
+    <div class="idrow"><select class="ans" id="no"><option value="">번호</option>${nos}</select>
+      <input class="ans" id="nm" maxlength="10" placeholder="이름" value="${esc(S.name)}"></div>
+    <div class="fb" id="fb"></div>
+    <div class="row"><button class="btn gold" id="go">${cont?'이어서 하기':'모험 시작'}</button>
+    ${cont?'<button class="btn ghost" id="new">새로 시작</button>':''}</div></div>`;
+  const start = f => {
+    const no=$('#no').value, n=$('#nm').value.trim();
+    if(!no || !n){ const fb=$('#fb'); fb.className='fb bad'; fb.textContent='번호와 이름을 모두 써 주세요!'; return; }
+    const changed = String(no)!==String(S.no) || n!==S.name;
+    if(f || (changed && cont && confirm('다른 친구 이름이에요. 처음부터 새로 시작할까요?'))) S=fresh(no,n); else { S.no=no; S.name=n; }
+    save(); beep('ok'); record('시작', `미션 ${S.m+1}`, ''); route();
+  };
+  $('#go').onclick = () => start(false);
+  if(cont) $('#new').onclick = () => start(true);
+}
+function route(){ S.m < MISSIONS.length ? story(S.m,0) : gateIntro(); }
+
+function story(mi, pi){
+  drawHud(); top0();
+  const M=MISSIONS[mi], last=pi===M.story.length-1;
+  screen.innerHTML = `<div class="card">
+    <span class="tag">미션 ${mi+1} / ${MISSIONS.length}</span>
+    <h2>${esc(M.title)}</h2>
+    ${pi===0?`<img class="scene" src="${img(M.pic)}" alt="">`:''}
+    ${M.story[pi]}
+    <div class="row">${pi>0?'<button class="btn ghost" id="prev">이전</button>':''}
+      <button class="btn ${last?'gold':''}" id="next">${last?(S.qi>0?'문제로 돌아가기':'문제 도전!'):'다음'}</button></div></div>`;
+  if(pi>0) $('#prev').onclick = () => story(mi,pi-1);
+  $('#next').onclick = () => last ? ask(mi,S.qi||0) : story(mi,pi+1);
+}
+
+/* 문제 엔진: 맞혀야만 다음으로 */
+function ask(mi, qi){
+  const M=MISSIONS[mi];
+  if(qi>=M.qs.length) return reward(mi);
+  S.qi=qi; save();
+  drawHud(); top0();
+  const Q=M.qs[qi]; let tries=0;
+  screen.innerHTML = `<div class="card">
+    <span class="tag">미션 ${mi+1} · ${esc(M.title)}</span>
+    <div class="qno">문제 ${qi+1} / ${M.qs.length}</div>
+    <div class="qtext">${esc(Q.q)}</div>
+    <div id="body"></div><div class="fb" id="fb"></div><div class="row" id="ctl"></div></div>`;
+  const body=$('#body'), fb=$('#fb'), ctl=$('#ctl'), wk=mi+'-'+qi;
+  const wrong = () => { tries++; S.wr[wk]=(S.wr[wk]||0)+1; save(); beep('bad'); fb.className='fb bad'; fb.textContent=`아쉬워요! 다시 도전해 보세요. 힌트: ${Q.hint}`; };
+  const right = (msg) => {
+    const got = tries===0?3:tries===1?2:1; S.coins+=got; save(); drawHud(); beep('ok');
+    fb.className='fb good'; fb.textContent= msg || `정답이에요! 엽전 ${got}냥을 얻었어요.`;
+    body.querySelectorAll('button,input,textarea').forEach(e=>e.disabled=true);
+    ctl.innerHTML=`<button class="btn gold" id="nx">${qi===M.qs.length-1?'보물 받기':'다음 문제'}</button>`;
+    $('#nx').onclick=()=>ask(mi,qi+1); $('#nx').focus();
+  };
+  ctl.innerHTML=`<button class="btn ghost sm" id="bk">이야기 다시 보기</button>`;
+  $('#bk').onclick=()=>story(mi,0);
+  const addCheck = (fn,label='확인') => { const b=document.createElement('button'); b.className='btn'; b.textContent=label; b.onclick=fn; ctl.appendChild(b); };
+  const say = t => { fb.className='fb bad'; fb.textContent=t; };
+  const flash = b => { b.classList.remove('no'); void b.offsetWidth; b.classList.add('no'); setTimeout(()=>b.classList.remove('no'),500); };
+
+  if(Q.type==='choice'){
+    body.innerHTML=`<div class="opts">${shuffle(Q.opts.map((_,i)=>i)).map(i=>`<button class="opt" data-i="${i}">${esc(Q.opts[i])}</button>`).join('')}</div>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(+b.dataset.i===Q.a){b.classList.add('ok');right();} else {b.classList.add('no');b.disabled=true;wrong();} });
+  }
+  else if(Q.type==='ox'){
+    body.innerHTML=`<div class="ox"><button class="opt o" data-v="O">O</button><button class="opt x" data-v="X">X</button></div>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(b.dataset.v===Q.a){b.classList.remove('no');b.classList.add('ok');right();} else {flash(b);wrong();} });
+  }
+  else if(Q.type==='input'){
+    body.innerHTML=`<div class="center"><input class="ans" id="in" autocomplete="off" placeholder="${esc(Q.ph||'')}" ${Q.num?'inputmode="numeric"':''}></div>`;
+    const inp=$('#in'), chk=()=>{ if(!inp.value.trim()) return inp.focus(); Q.a.map(norm).includes(norm(inp.value))?right():(wrong(),inp.select()); };
+    addCheck(chk); inp.onkeydown=e=>{ if(e.key==='Enter'&&!e.isComposing&&!inp.disabled) chk(); }; inp.focus();
+  }
+  else if(Q.type==='multi'){
+    body.innerHTML=`<div class="opts two">${shuffle(Q.opts.map((_,i)=>i)).map(i=>`<button class="opt" data-i="${i}">${esc(Q.opts[i])}</button>`).join('')}</div>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>b.classList.toggle('sel'));
+    addCheck(()=>{ const sel=[...body.querySelectorAll('.opt.sel')].map(b=>+b.dataset.i).sort(); if(sel.join()===Q.a.join()){body.querySelectorAll('.opt.sel').forEach(b=>b.classList.add('ok'));right();} else wrong(); });
+  }
+  else if(Q.type==='order'){
+    const pool=shuffled(Q.items.map((_,i)=>i)); let seq=[];
+    body.innerHTML=`<div class="seq" id="seq"></div><div class="pills" id="pool"></div>`;
+    const draw=()=>{
+      $('#seq').innerHTML=seq.map((i,k)=>`<button class="pill" data-k="${k}">${k+1}. ${esc(Q.items[i])}</button>`).join('');
+      $('#pool').innerHTML=pool.map(i=>`<button class="pill pool ${seq.includes(i)?'used':''}" data-i="${i}">${esc(Q.items[i])}</button>`).join('');
+      $('#pool').querySelectorAll('.pill').forEach(b=>b.onclick=()=>{seq.push(+b.dataset.i);draw();});
+      $('#seq').querySelectorAll('.pill').forEach(b=>b.onclick=()=>{seq.splice(+b.dataset.k,1);draw();});
+    }; draw();
+    addCheck(()=>{ if(seq.length<Q.items.length) return say('카드를 모두 놓아 주세요!'); seq.every((v,k)=>v===k)?right():(wrong(),seq=[],draw()); });
+  }
+  else if(Q.type==='frames'){
+    const order=shuffled(Q.items.map((_,i)=>i)); let seq=[];
+    body.innerHTML=`<div class="frames">${order.map(i=>`<button class="frame" data-i="${i}"><span class="num"></span><img src="${img(Q.items[i][0])}" alt="">${esc(Q.items[i][1])}</button>`).join('')}</div>
+      <p class="center note">다시 누르면 번호가 빠져요.</p>`;
+    const draw=()=>body.querySelectorAll('.frame').forEach(b=>{ const k=seq.indexOf(+b.dataset.i); b.classList.toggle('on',k>=0); b.querySelector('.num').textContent=k>=0?k+1:''; });
+    body.querySelectorAll('.frame').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i, k=seq.indexOf(i); if(k>=0) seq.splice(k,1); else seq.push(i); draw(); });
+    addCheck(()=>{ if(seq.length<Q.items.length) return say('그림을 모두 눌러 순서를 정해 주세요!'); seq.every((v,k)=>v===k)?right():(wrong(),seq=[],draw()); });
+  }
+  else if(Q.type==='match'){
+    const L=shuffle(Q.pairs.map((_,i)=>i)), R=shuffled(L); let pick=null, done=0;
+    body.innerHTML=`<div class="match">${L.map((l,k)=>{const p=Q.pairs[l],r=Q.pairs[R[k]];return `<button class="opt" data-s="L" data-i="${l}">${p[0]?`<img src="${img(p[0])}" alt="">`:''}<span>${esc(p[1])}</span></button><button class="opt" data-s="R" data-i="${R[k]}">${esc(r[2])}</button>`;}).join('')}</div>
+      <p class="center note">왼쪽을 누른 뒤, 알맞은 오른쪽을 눌러요.</p>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      if(b.dataset.s==='L'){ body.querySelectorAll('.opt.sel').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); pick=b; return; }
+      if(!pick) return say('먼저 왼쪽을 골라 주세요!');
+      if(pick.dataset.i===b.dataset.i){ [pick,b].forEach(x=>{x.classList.remove('sel');x.classList.add('ok');x.disabled=true;}); pick=null; done++;
+        if(done===Q.pairs.length) right(); else { beep('ok'); fb.className='fb good'; fb.textContent='짝을 찾았어요! 계속해 보세요.'; }
+      } else { flash(b); wrong(); }
+    });
+  }
+  else if(Q.type==='sort'){
+    const items=shuffle(Q.items); let k=0;
+    const draw=()=>{ body.innerHTML=`<p class="center qno">${k+1} / ${items.length}</p><div class="sortcard">${esc(items[k][0])}</div><div class="bins">${Q.bins.map((t,i)=>`<button class="btn ${['','gold','red','ghost'][i%4]}" data-i="${i}">${esc(t)}</button>`).join('')}</div>`;
+      body.querySelectorAll('.bins .btn').forEach(b=>b.onclick=()=>{ if(+b.dataset.i===items[k][1]){ k++; if(k===items.length){ body.innerHTML='<div class="sortcard">모두 분류했어요!</div>'; right(); } else { beep('ok'); fb.className='fb good'; fb.textContent='맞았어요!'; draw(); } } else { const c=body.querySelector('.sortcard'); c.style.animation='none'; void c.offsetWidth; c.style.animation='shake .35s'; wrong(); } });
+    }; draw();
+  }
+  else if(Q.type==='pic'){
+    body.innerHTML=`<img class="qpic" src="${img(Q.pic)}" alt=""><div class="opts two">${shuffle(Q.opts.map((_,i)=>i)).map(i=>`<button class="opt" data-i="${i}" style="text-align:center">${esc(Q.opts[i])}</button>`).join('')}</div>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(+b.dataset.i===Q.a){b.classList.add('ok');right();} else {b.classList.add('no');b.disabled=true;wrong();} });
+  }
+  else if(Q.type==='short'){
+    const MAXC=15, MINC=6, prev=(S.ans&&S.ans[wk])||'';
+    body.innerHTML=`<div class="center"><input class="ans short" id="in" autocomplete="off" maxlength="${MAXC+5}" placeholder="15자 정도로 써 보세요" value="${esc(prev)}"><p id="cnt" style="margin:6px 0"></p></div>
+      <p class="center note">정답이 정해져 있지 않아요. 내 생각을 짧게 써요.</p>`;
+    const inp=$('#in'), n=()=>inp.value.replace(/\s/g,'').length;
+    const up=()=>{ const k=n(); $('#cnt').innerHTML=`<b style="color:${k>MAXC?'var(--red)':k>=MINC?'var(--ok)':'var(--muted)'}">${k}자</b> / 15자 정도`; };
+    inp.oninput=up; up();
+    const chk=()=>{ const k=n(); if(k<MINC) return say(`조금만 더 써 보세요! ${MINC}자 이상 써요.`); if(k>MAXC+3) return say('15자 정도로 짧게 줄여 보세요!');
+      S.ans=S.ans||{}; S.ans[wk]=inp.value.trim(); save(); record('서술형', `미션 ${mi+1} 문제 ${qi+1}`, inp.value.trim());
+      right(`잘 썼어요! 엽전 3냥을 얻었어요. 예시 답: ${Q.ex}`); };
+    addCheck(chk,'제출하기'); inp.onkeydown=e=>{ if(e.key==='Enter'&&!e.isComposing&&!inp.disabled) chk(); }; inp.focus();
+  }
+}
+
+function reward(mi){
+  const M=MISSIONS[mi];
+  const detail = M.qs.map((_,i)=>`${i+1}번 ${S.wr[mi+'-'+i]||0}회`).join(', ');
+  const wrongSum = M.qs.reduce((a,_,i)=>a+(S.wr[mi+'-'+i]||0),0);
+  if(S.m<=mi){ S.m=mi+1; S.qi=0; save(); record('미션완료', `미션 ${mi+1} ${M.title}`, `틀린 횟수 ${wrongSum}회 (${detail})`); }
+  drawHud(); top0(); beep('win'); confetti(40);
+  screen.innerHTML=`<div class="card center"><span class="tag">미션 ${mi+1} 성공!</span>
+    <h2>발명품 획득!</h2><img class="item" src="${img(M.item.img)}" alt="${esc(M.item.name)}">
+    <h2>${esc(M.item.name)}</h2><p>${S.m<MISSIONS.length?`앞으로 ${MISSIONS.length-S.m}개만 더 모으면 궁궐 문을 열 수 있어요!`:'발명품 5개를 모두 모았어요!'}</p>
+    <div class="row"><button class="btn gold" id="nx">${S.m<MISSIONS.length?'다음 미션으로':'궁궐 문으로!'}</button></div></div>`;
+  $('#nx').onclick=route;
+}
+
+function gateIntro(){
+  drawHud(); top0();
+  screen.innerHTML=`<div class="card center"><span class="tag red">최종 관문</span>
+    <img class="scene" src="${img('palace')}" alt="잠긴 궁궐 문">
+    <h2>세종 임금님의 궁궐 문</h2>
+    ${kkabi('발명품 5개를 다 모았구나! 마지막 관문은 <b>발명 빙고</b>야. 옳은 설명은 O, 틀린 설명은 X를 눌러 줘. 빙고가 완성되면 문이 열려!')}
+    <div class="row"><button class="btn gold" id="nx">빙고 시작</button></div></div>`;
+  $('#nx').onclick=bingo;
+}
+
+function bingo(){
+  drawHud(); top0();
+  const done=Array(9).fill(false); let cur=0, tries=0, wrongs=0;
+  screen.innerHTML=`<div class="card"><span class="tag red">최종 관문 · 발명 빙고</span>
+    <div class="qtext" style="margin-top:8px">옳은 설명의 칸만 빙고가 돼요!</div>
+    <div class="bingo" id="bg"></div><div id="q"></div><div class="fb" id="fb"></div></div>`;
+  const fb=$('#fb');
+  const draw=()=>{
+    const ok=i=>done[i]&&BINGO[i][1], lines=LINES.filter(l=>l.every(ok)).flat(), all=done.every(Boolean);
+    $('#bg').innerHTML=BINGO.map((b,i)=>`<button data-i="${i}" class="${done[i]?(b[1]?((all&&lines.includes(i))?'line':'t'):'f'):(i===cur?'cur':'')}">${done[i]?(b[1]?'O':'X'):i+1}</button>`).join('');
+    $('#bg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i; if(!done[i]){cur=i;tries=0;fb.className='fb';draw();} });
+    if(all) return askLines(LINES.filter(l=>l.every(ok)).length);
+    $('#q').innerHTML=`<div class="qtext">${cur+1}. ${esc(BINGO[cur][0])}</div><div class="ox"><button class="opt o" data-v="1">O</button><button class="opt x" data-v="0">X</button></div>`;
+    $('#q').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      if(+b.dataset.v===BINGO[cur][1]){ S.coins+=tries?1:3; tries=0; save(); drawHud(); beep('ok'); done[cur]=true;
+        fb.className='fb good'; fb.textContent='정답이에요! '+BINGO[cur][2];
+        const n=done.indexOf(false); if(n>=0) cur=n; draw();
+      } else { tries++; wrongs++; beep('bad'); fb.className='fb bad'; fb.textContent='다시 생각해 보세요! 공부한 내용을 떠올려 보세요.'; }
+    });
+  };
+  const askLines=n=>{
+    $('#q').innerHTML=`<div class="qtext">완성된 빙고는 몇 줄인가요?</div><div class="opts two">${[1,2,3,4].map(v=>`<button class="opt" data-v="${v}" style="text-align:center">${v}줄</button>`).join('')}</div>`;
+    $('#q').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ if(+b.dataset.v===n) opening(wrongs); else { b.classList.add('no'); b.disabled=true; wrongs++; beep('bad'); fb.className='fb bad'; fb.textContent='가로, 세로, 대각선 줄을 모두 세어 보세요!'; } });
+  };
+  draw();
+}
+
+function opening(wrongs){
+  drawHud(); top0(); beep('win');
+  screen.innerHTML=`<div class="card center"><h2>발명품을 임금님께 바쳐요!</h2>
+    <img class="scene" src="${img('palace')}" alt="">
+    <div class="locks">${MISSIONS.map((m,i)=>`<img src="${img(m.item.img)}" alt="" style="animation-delay:${i*.25}s">`).join('')}</div></div>`;
+  setTimeout(()=>ending(wrongs),2200);
+}
+
+function rankOf(c){ const r=c/MAX_COINS; return r>=.9?'으뜸 발명가':r>=.75?'뛰어난 발명가':r>=.55?'성실한 발명가':'새싹 발명가'; }
+function ending(wrongs){
+  const first = !S.done;
+  S.m=MISSIONS.length; S.done=true; save(); drawHud(); top0(); beep('win'); confetti(150);
+  const rank = rankOf(S.coins);
+  if(first) record('최종통과', '궁궐 문 통과', `${rank} · 빙고 틀린 횟수 ${wrongs||0}회`);
+  screen.innerHTML=`<div class="card center">
+    <img class="scene" src="${img('palaceopen')}" alt="활짝 열린 궁궐 문">
+    <h1>궁궐 문이 열렸어요!</h1>
+    <div class="cert"><img src="${img('award')}" alt="칭찬 교지" style="width:120px;height:120px;object-fit:contain"><br>
+      <span class="tag red">세종 임금님의 칭찬 교지</span>
+      <h2>${esc(CLASS_NAME)} ${esc(S.no)}번 ${esc(S.name||'발명가')}</h2>
+      <p>위 사람은 『농사직설』, 앙부일구와 자격루, 혼천의와 측우기, 훈민정음, 갑인자를 모두 공부하여<br>조선의 발전을 잘 알게 되었기에 이 교지를 내립니다.</p>
+      <div class="locks">${MISSIONS.map(m=>`<img src="${img(m.item.img)}" alt="${esc(m.item.name)}">`).join('')}</div>
+      <p class="jua" style="font-size:1.5em;margin:0">${rank} · 엽전 ${S.coins}냥</p></div>
+    ${Object.keys(S.ans||{}).length?`<h2 style="margin-top:20px">내가 쓴 생각</h2><div class="letterbox">${MISSIONS.flatMap((m,mi)=>m.qs.map((q,qi)=>S.ans[mi+'-'+qi]?`• ${esc(q.q)}\n  → ${esc(S.ans[mi+'-'+qi])}`:'')).filter(Boolean).join('\n')}</div>`:''}
+    <h2 style="margin-top:20px">배움 노트</h2>
+    <div class="chips" style="text-align:left">
+      <div class="chip"><b>농업</b><small>우리 땅에 맞는 농사책 『농사직설』</small></div>
+      <div class="chip"><b>과학</b><small>혼천의, 앙부일구, 자격루, 측우기로 생활이 편리해짐</small></div>
+      <div class="chip"><b>문화</b><small>훈민정음 창제 → 유교 가르침을 배우고 문화가 발전</small></div>
+    </div>
+    <div class="row"><button class="btn" id="again">처음부터 다시 하기</button></div></div>`;
+  $('#again').onclick=()=>{ S=fresh(S.no,S.name); save(); title(); };
+}
+
+/* ===================== 선생님 설정 ===================== */
+$('#teacherBtn').onclick = () => {
+  hud.classList.add('hidden'); top0();
+  const cur=gasUrl();
+  const base=location.href.split('?')[0].split('#')[0];
+  screen.innerHTML=`<div class="card"><span class="tag">선생님 설정</span><h2>기록 받을 주소</h2>
+    <p>구글 앱스스크립트를 웹 앱으로 배포한 뒤, 받은 주소(https://script.google.com/... /exec)를 붙여 넣어 주세요.</p>
+    <input class="ans" id="gurl" style="width:100%;text-align:left;font-size:18px" placeholder="https://script.google.com/macros/s/.../exec" value="${esc(cur)}">
+    <div class="row"><button class="btn" id="gsave">저장</button><button class="btn ghost" id="gtest">시험 기록 보내기</button><button class="btn ghost" id="gback">돌아가기</button></div>
+    <div class="fb" id="fb"></div>
+    <p class="note" style="margin-top:18px">학생 기기마다 주소를 넣기 번거로우면, 아래 링크를 학생들에게 나눠 주세요. 한 번 열면 주소가 기억돼요.</p>
+    <div class="letterbox" id="share" style="word-break:break-all;font-size:16px">${cur?esc(base+'?gas='+encodeURIComponent(cur)):'(주소를 저장하면 링크가 나타나요)'}</div></div>`;
+  const fb=$('#fb');
+  $('#gsave').onclick=()=>{ const v=$('#gurl').value.trim();
+    if(v && !/^https:\/\/script\.google\.com\/.+\/exec$/.test(v)){ fb.className='fb bad'; fb.textContent='주소가 https://script.google.com/ 으로 시작하고 /exec 로 끝나는지 확인해 주세요.'; return; }
+    try{ v?localStorage.setItem(GAS_KEY,v):localStorage.removeItem(GAS_KEY); }catch(e){}
+    fb.className='fb good'; fb.textContent='저장했어요!'; $('#share').textContent=v?base+'?gas='+encodeURIComponent(v):'(주소를 저장하면 링크가 나타나요)'; flush(); };
+  $('#gtest').onclick=async()=>{ const url=gasUrl(); if(!url){ fb.className='fb bad'; fb.textContent='먼저 주소를 저장해 주세요.'; return; }
+    try{ await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({class:CLASS_NAME,no:'0',name:'선생님 시험',kind:'시험',stage:'-',coins:0,status:'',detail:'연결 확인',at:new Date().toLocaleString('ko-KR')})});
+      fb.className='fb good'; fb.textContent='보냈어요! 스프레드시트 "기록" 탭에 "선생님 시험" 줄이 생겼는지 확인해 주세요.'; }
+    catch(e){ fb.className='fb bad'; fb.textContent='보내지 못했어요. 인터넷 연결과 주소를 확인해 주세요.'; } };
+  $('#gback').onclick=title;
+};
+
+flush();
+title();
+</script>
+</body>
+</html>
